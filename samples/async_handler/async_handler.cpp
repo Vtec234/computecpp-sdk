@@ -66,20 +66,20 @@ int main() {
    * exception individually from the list by reordering the code such that
    * the for loop encapsulates the try/catch. */
   auto asyncHandler = [&error, &nTimesCall](cl::sycl::exception_list eL) {
-    ++nTimesCall;
-    try {
-      for (auto& e : eL) {
-        std::rethrow_exception(e);
-      }
-    } catch (cl::sycl::exception& e) {
-      /* We set to true since we have caught a SYCL exception.
-       * More complex checking of error classes can be done here,
-       * like checking for specific SYCL sub-classes or
-       * recovering a potential underlying OpenCL error. */
-      error = true;
-      std::cout << " I have caught an exception! " << std::endl;
-      std::cout << e.what() << std::endl;
-    }
+	  ++nTimesCall;
+	  for (auto& e : eL) {
+		  try {
+			  std::rethrow_exception(e);
+		  } catch (cl::sycl::exception& e) {
+			  /* We set to true since we have caught a SYCL exception.
+			   * More complex checking of error classes can be done here,
+			   * like checking for specific SYCL sub-classes or
+			   * recovering a potential underlying OpenCL error. */
+			  error = true;
+			  std::cout << " I have caught an exception! " << std::endl;
+			  std::cout << e.what() << std::endl;
+		  }
+	  }
   };
 
   /* This command group causes an asynchronous SYCL error, since
